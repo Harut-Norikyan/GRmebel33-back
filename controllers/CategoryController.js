@@ -4,7 +4,11 @@ module.exports = {
   addCategory: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const { categoryName } = req.body;
+      await Category.create({ categoryName })
+      return res.status(200).json({
+        message: "Категория успешно добавлена !!!"
+      })
     } catch (error) {
       next(error)
     }
@@ -13,7 +17,10 @@ module.exports = {
   getCategories: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const categories = await Category.find({});
+      return res.status(200).json({
+        categories
+      })
     } catch (error) {
       next(error)
     }
@@ -22,7 +29,11 @@ module.exports = {
   getCategoryById: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const { id } = req.params;
+      const category = await Category.findById({ "_id": id });
+      return res.status(200).json({
+        category
+      })
     } catch (error) {
       next(error)
     }
@@ -31,7 +42,11 @@ module.exports = {
   updateCategoryById: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const { categoryName, id } = req.body;
+      await Category.findOneAndUpdate({ "_id": id }, { categoryName })
+      return res.status(200).json({
+        message: "Категория успешно обновлена !!!"
+      })
     } catch (error) {
       next(error)
     }
@@ -40,7 +55,11 @@ module.exports = {
   removeCategoryById: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const { id } = req.params;
+      await Category.findOneAndRemove({ "_id": id })
+      return res.status(200).json({
+        message: "Категория успешно удалена !!!"
+      })
     } catch (error) {
       next(error)
     }

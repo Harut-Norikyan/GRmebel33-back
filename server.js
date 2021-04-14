@@ -11,7 +11,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'uploads')));
-// app.use("/", router);
+app.use("/gr-admin", router);
 connectDb();
 app.listen(PORT,hostname, function(){
     console.log(`CORS-enabled web server listening on port ${PORT}`)

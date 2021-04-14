@@ -1,10 +1,15 @@
-const Category = require("../models/Category");
+const AboutUs = require("../models/AboutUs");
 
 module.exports = {
   addAboutUsText: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      console.log(req.body);
+      const { description } = req.body;
+      await AboutUs.create({ description });
+      return res.status(200).json({
+        message: "Текст успешно добавлен !!!"
+      })
     } catch (error) {
       next(error)
     }
@@ -13,7 +18,10 @@ module.exports = {
   getAboutUsText: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const data = await AboutUs.findOne({});
+      return res.status(200).json({
+        data
+      })
     } catch (error) {
       next(error)
     }
@@ -22,19 +30,14 @@ module.exports = {
   updateAboutUsText: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      
+      const { description, descId } = req.body;
+      const data = await AboutUs.findOneAndUpdate({ "_id": descId }, { description })
+      return res.status(200).json({
+        message: "Текст успешно обновлен !!!",
+        data
+      })
     } catch (error) {
       next(error)
     }
   },
-
-  removeAboutUsText: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    try {
-      
-    } catch (error) {
-      next(error)
-    }
-  },
-
 }

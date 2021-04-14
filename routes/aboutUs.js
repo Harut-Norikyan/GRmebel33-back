@@ -3,9 +3,8 @@ const router = express.Router();
 const AboutUsController = require('../controllers/AboutUsController');
 const auth = require('../middlewares/auth');
 
-router.post("/add-about-us-text", auth, AboutUsController.addAboutUsText);
-router.get("/get-about-us-text", auth, AboutUsController.getAboutUsText);
-router.put("/update-about-us-text", auth, AboutUsController.updateAboutUsText);
-router.delete("/remove-about-us-text", auth, AboutUsController.removeAboutUsText);
+router.post("/add-about-us-description", AboutUsController.addAboutUsText);
+router.get("/get-about-us-description", AboutUsController.getAboutUsText);
+router.put("/update-about-us-description", AboutUsController.updateAboutUsText);
 
 module.exports = router;

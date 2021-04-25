@@ -10,7 +10,7 @@ const connectDb = require('./db');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, './public/uploads')));
 app.use("/gr-admin", router);
 connectDb();
 app.listen(PORT, hostname, function () {

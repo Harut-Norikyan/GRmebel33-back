@@ -1,18 +1,33 @@
 const jwt = require('jsonwebtoken');
+const { secret } = require("../config");
+const User = require("../models/User");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-    const userId = decodedToken.userId;
-    if (req.body.userId && req.body.userId !== userId) {
-      throw 'Invalid user ID';
-    } else {
-      next();
+    const token = req.headers.authorization;
+    if (token === 'null' || !token) {
+      return res.status(401).json({
+        message: "Unauthorized request !!!"
+      })
+    };
+    let verifiedUser = jwt.verify(token, secret);
+    if (!verifiedUser) {
+      return res.status(401).json({
+        message: "Unauthorized request !!!"
+      })
     }
-  } catch {
-    res.status(401).json({
-      error: new Error('Invalid request!')
-    });
+    const user = await User.findById(verifiedUser.id);
+    if (user) {
+      next();
+    } else {
+      return res.status(401).json({
+        message: "Unauthorized request !!!"
+      })
+    }
+  } catch (e) {
+    next();
+    return res.status(401).json({
+      message: e
+    })
   }
 };

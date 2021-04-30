@@ -30,9 +30,16 @@ module.exports = {
   getProducts: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      const products = await Product.find({})
+      const { currentPage } = req.params;
+      const limit = 10;
+      const products = await Product.find()
+        .limit(limit * 1)
+        .skip((currentPage - 1) * limit)
+        .exec();
+      const count = await Product.countDocuments();
       return res.status(200).json({
-        products
+        products,
+        totalPages: Math.ceil(count / limit),
       })
     } catch (error) {
       next(error)
@@ -60,10 +67,42 @@ module.exports = {
     }
   },
 
-  getProductByCategoryName: async (req, res, next) => {
+  searchProduct: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-
+      const { data } = req.body;
+      const products = await Product.find({});
+      const result = [];
+      if (products) {
+        products.forEach(product => {
+          data.forEach(text => {
+            JSON.parse(product.keyWords).forEach(keyWord => {
+              if (text === keyWord) {
+                result.push(product);
+              }
+            })
+          })
+        })
+        products.forEach(product => {
+          data.forEach(text => {
+            if (product.name === text) {
+              const isExist = result?.find(productById => productById._id === product._id);
+              if (!isExist) {
+                result.unshift(product);
+              }
+            }
+          })
+        })
+      }
+      if (result.length) {
+        return res.status(200).json({
+          products: result
+        })
+      } else {
+        return res.status(200).json({
+          products: []
+        })
+      }
     } catch (error) {
       next(error)
     }
@@ -74,9 +113,6 @@ module.exports = {
     try {
       const { id } = req.params;
       const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
-      // name, description, price, newPrice, discount, minPrice, images, keyWords, categoriesId
-      // console.log(id);
-      // console.log(req.body, "req.body");
       var product = await Product.findById({ "_id": id });
       if (product) {
         var productImages = [...JSON.parse(product.images)];
@@ -116,13 +152,22 @@ module.exports = {
     res.header("Access-Control-Allow-Origin", "*");
     try {
       const { id } = req.params;
-      await Product.findOneAndRemove({ "_id": id }, function (err) {
-        if (!err) {
-          return res.status(200).json({
-            message: "Продукт успешно удалён !!!"
-          })
-        }
-      })
+      const { images } = req.body;
+      if (id, images) {
+        JSON.parse(images).forEach(img => {
+          if (path.join(__dirname, `../public/uploads/${img}`)) {
+            const imgDir = path.join(__dirname, `../public/uploads/${img}`);
+            fs.unlinkSync(imgDir);
+          };
+        });
+        await Product.findOneAndRemove({ "_id": id }, function (err) {
+          if (!err) {
+            return res.status(200).json({
+              message: "Продукт успешно удалён !!!"
+            })
+          }
+        })
+      }
     } catch (error) {
       next(error)
     }

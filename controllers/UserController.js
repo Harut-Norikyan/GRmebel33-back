@@ -6,7 +6,7 @@ const { validationResult } = require("express-validator")
 
 generateAccessToken = (id) => {
   const payload = { id }
-  return jwt.sign(payload, secret, { expiresIn: "24h" });
+  return jwt.sign(payload, secret, { expiresIn: "6h" });
 }
 
 module.exports = {
@@ -22,7 +22,6 @@ module.exports = {
       if (user) {
         return res.status(400).json({ message: "Пользователь с такой электронной почтой уже существует !!!" })
       }
-
       const hashPassword = bcrypt.hashSync(password, 5);
       await User.create({
         firstName, lastName, email, password: hashPassword
@@ -30,10 +29,6 @@ module.exports = {
       return res.status(200).json({
         message: "Пользователь успешно добавлен !!!"
       })
-
-
-
-
     } catch (error) {
       next(error)
     }

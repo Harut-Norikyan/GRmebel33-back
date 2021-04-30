@@ -4,7 +4,6 @@ module.exports = {
   addAboutUsText: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      console.log(req.body);
       const { description } = req.body;
       await AboutUs.create({ description });
       return res.status(200).json({

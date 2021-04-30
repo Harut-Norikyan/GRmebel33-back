@@ -17,12 +17,19 @@ module.exports = {
   getCategories: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      const categories = await Category.find({});
+      const { currentPage } = req.params;
+      const limit = 10;
+      const categories = await Category.find()
+        .limit(limit * 1)
+        .skip((currentPage - 1) * limit)
+        .exec();
+      const count = await Category.countDocuments();
       return res.status(200).json({
-        categories
+        categories,
+        totalPages: Math.ceil(count / limit),
       })
     } catch (error) {
-      next(error)
+
     }
   },
 

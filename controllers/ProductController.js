@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
-const url = 'http://localhost:4000';
+const { host, port } = require("../config");
+const url = `http://${host}:${port}`;
 const path = require("path");
 const fs = require('fs');
 

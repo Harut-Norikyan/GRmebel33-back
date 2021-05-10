@@ -73,7 +73,7 @@ module.exports = {
     try {
       const { data } = req.body;
       const products = await Product.find({});
-      const result = [];
+      var result = [];
       if (products) {
         products.forEach(product => {
           data.forEach(text => {
@@ -94,6 +94,9 @@ module.exports = {
             }
           })
         })
+        if (result.length) {
+          result = result.filter((v, i, a) => a.findIndex(t => (t._id === v._id)) === i);
+        }
       }
       if (result.length) {
         return res.status(200).json({
@@ -209,6 +212,27 @@ module.exports = {
           message: "Выбранная вами фотография сделана главной !!!"
         })
       }
+    } catch (error) {
+      next(error)
+    }
+  },
+
+  getProductByCategoryId: async (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    try {
+      const { id } = req.params;
+      var productsBycategoryId = [];
+      const products = await Product.find({});
+      products && products.forEach(product => {
+        if (JSON.parse(product?.categoriesId)) {
+          JSON.parse(product?.categoriesId).forEach(category => {
+            if (category.value === id) productsBycategoryId.push(product);
+          })
+        }
+      })
+      return res.status(200).json({
+        products: productsBycategoryId,
+      })
     } catch (error) {
       next(error)
     }

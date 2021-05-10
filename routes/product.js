@@ -12,5 +12,6 @@ router.post("/remove-product/:id", auth, ProductController.removeProductById);
 router.post("/remove-product-image/:id", auth, ProductController.removeProductImage);
 router.post("/make-the-main/:id", auth, ProductController.makeTheMain);
 router.post("/search", ProductController.searchProduct);
+router.get("/get-product-by-vategory-id/:id", ProductController.getProductByCategoryId);
 
 module.exports = router;

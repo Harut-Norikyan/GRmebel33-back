@@ -6,6 +6,7 @@ const upload = require('../middlewares/fileUpload');
 
 router.post("/add-product", auth, upload, ProductController.addProduct);
 router.get("/get-products/:currentPage", ProductController.getProducts);
+router.get("/get-all-products", ProductController.getAllProducts);
 router.get("/get-product-by-id/:id", ProductController.getProductById);
 router.put("/update-product/:id", auth, upload, ProductController.updateProductById);
 router.post("/remove-product/:id", auth, ProductController.removeProductById);

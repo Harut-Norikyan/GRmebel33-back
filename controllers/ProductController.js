@@ -47,6 +47,18 @@ module.exports = {
     }
   },
 
+  getAllProducts: async (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    try {
+      const products = await Product.find({});
+      return res.status(200).json({
+        products,
+      })
+    } catch (error) {
+      next(error)
+    }
+  },
+
   getProductById: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {

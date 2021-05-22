@@ -1,14 +1,27 @@
 const Category = require("../models/Category");
+const { host, port } = require("../config");
+const url = `http://${host}:${port}`;
+const path = require("path");
+const fs = require('fs');
 
 module.exports = {
   addCategory: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
       const { categoryName } = req.body;
-      await Category.create({ categoryName })
-      return res.status(200).json({
-        message: "Категория успешно добавлена !!!"
-      })
+      if (categoryName && req.files) {
+        const imagePaths = [];
+        if (req.files) {
+          req.files.forEach(img => {
+            imagePaths.push(img.filename);
+          })
+        }
+        const images = JSON.stringify(imagePaths) || [];
+        await Category.create({ categoryName, images })
+        return res.status(200).json({
+          message: "Категория успешно добавлена !!!"
+        })
+      }
     } catch (error) {
       next(error)
     }
@@ -37,7 +50,15 @@ module.exports = {
     res.header("Access-Control-Allow-Origin", "*");
     try {
       const { id } = req.params;
-      const category = await Category.findById({ "_id": id });
+      const category = await Category.findById({ '_id': id });
+      if (category) {
+        var images = [];
+        JSON.parse(category.images).forEach(img => {
+          // updatedImages.push(url + img.slice(7, img.length))
+          images.push(url + "/" + img)
+        })
+        category.images = JSON.stringify(images);
+      }
       return res.status(200).json({
         category
       })
@@ -49,8 +70,27 @@ module.exports = {
   updateCategoryById: async (req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     try {
-      const { categoryName, id } = req.body;
-      await Category.findOneAndUpdate({ "_id": id }, { categoryName })
+      const { categoryName, categoryId, imgPath } = req.body;
+      const imagesArr = [];
+      if (req.files) {
+        req.files.forEach(img => {
+          imagesArr.push(img.filename);
+        })
+      }
+      if (imagesArr.length) {
+        const imgPathArr = imgPath.split("/");
+        const oldImageName = imgPathArr[imgPathArr.length - 1];
+        const imgDir = path.join(__dirname, `../public/uploads/${oldImageName}`);
+        fs.unlinkSync(imgDir);
+        await Category.findOneAndUpdate({ "_id": categoryId }, {
+          $set: {
+            categoryName,
+            "images": JSON.stringify(imagesArr),
+          }
+        })
+      } else {
+        await Category.findOneAndUpdate({ "_id": categoryId }, { categoryName })
+      }
       return res.status(200).json({
         message: "Категория успешно обновлена !!!"
       })

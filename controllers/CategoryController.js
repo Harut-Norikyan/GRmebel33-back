@@ -55,7 +55,8 @@ module.exports = {
         var images = [];
         JSON.parse(category.images).forEach(img => {
           // updatedImages.push(url + img.slice(7, img.length))
-          images.push(url + "/" + img)
+          // images.push(url + "/" + img)
+          images.push("https://gr-mebel-admin.herokuapp.com/gr-admin/get-image/" + img)
         })
         category.images = JSON.stringify(images);
       }

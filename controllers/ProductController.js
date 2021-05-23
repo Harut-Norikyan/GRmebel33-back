@@ -5,8 +5,14 @@ const path = require("path");
 const fs = require('fs');
 
 module.exports = {
+  getImage: async (req, res, next) => {
+    try {
+      return res.sendFile(path.resolve("./public/uploads/", req.params.imageName));
+    } catch (error) {
+      next(error)
+    }
+  },
   addProduct: async (req, res, next) => {
-    
     try {
       const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
       const imagePaths = [];
@@ -29,7 +35,7 @@ module.exports = {
   },
 
   getProducts: async (req, res, next) => {
-    
+
     try {
       const { currentPage } = req.params;
       const limit = 10;
@@ -48,7 +54,7 @@ module.exports = {
   },
 
   getAllProducts: async (req, res, next) => {
-    
+
     try {
       const products = await Product.find({});
       return res.status(200).json({
@@ -60,7 +66,7 @@ module.exports = {
   },
 
   getProductById: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       const product = await Product.findById({ '_id': id });
@@ -81,7 +87,7 @@ module.exports = {
   },
 
   searchProduct: async (req, res, next) => {
-    
+
     try {
       const { data } = req.body;
       const products = await Product.find({});
@@ -125,7 +131,7 @@ module.exports = {
   },
 
   updateProductById: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
@@ -165,7 +171,7 @@ module.exports = {
   },
 
   removeProductById: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       const { images } = req.body;
@@ -190,7 +196,7 @@ module.exports = {
   },
 
   removeProductImage: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       const { imgPath, images } = req.body;
@@ -214,7 +220,7 @@ module.exports = {
   },
 
   makeTheMain: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       const { images } = req.body;
@@ -230,7 +236,7 @@ module.exports = {
   },
 
   getProductByCategoryId: async (req, res, next) => {
-    
+
     try {
       const { id } = req.params;
       var productsBycategoryId = [];

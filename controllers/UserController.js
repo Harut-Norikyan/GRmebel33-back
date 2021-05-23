@@ -11,7 +11,7 @@ generateAccessToken = (id) => {
 
 module.exports = {
   registration: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -67,7 +67,7 @@ module.exports = {
   },
 
   getUsers: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+
     try {
       res.json("Server work")
     } catch (error) {
@@ -76,7 +76,7 @@ module.exports = {
   },
 
   updateUserById: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+
     try {
 
     } catch (error) {
@@ -85,7 +85,7 @@ module.exports = {
   },
 
   removeUserById: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+
     try {
 
     } catch (error) {

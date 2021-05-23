@@ -6,7 +6,7 @@ const fs = require('fs');
 
 module.exports = {
   addCategory: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { categoryName } = req.body;
       if (categoryName && req.files) {
@@ -28,7 +28,7 @@ module.exports = {
   },
 
   getCategories: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { currentPage } = req.params;
       const limit = 10;
@@ -47,7 +47,7 @@ module.exports = {
   },
 
   getCategoryById: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { id } = req.params;
       const category = await Category.findById({ '_id': id });
@@ -68,7 +68,7 @@ module.exports = {
   },
 
   updateCategoryById: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { categoryName, categoryId, imgPath } = req.body;
       const imagesArr = [];
@@ -100,7 +100,7 @@ module.exports = {
   },
 
   removeCategoryById: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { id } = req.params;
       await Category.findOneAndRemove({ "_id": id })

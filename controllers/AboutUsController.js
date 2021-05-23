@@ -2,7 +2,7 @@ const AboutUs = require("../models/AboutUs");
 
 module.exports = {
   addAboutUsText: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { description } = req.body;
       await AboutUs.create({ description });
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   getAboutUsText: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const data = await AboutUs.findOne({});
       return res.status(200).json({
@@ -27,7 +27,7 @@ module.exports = {
   },
 
   updateAboutUsText: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    
     try {
       const { description, descId } = req.body;
       const data = await AboutUs.findOneAndUpdate({ "_id": descId }, { description })

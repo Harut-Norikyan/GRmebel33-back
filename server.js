@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("./middlewares/cors");
-const https = require('https');
-const fs = require('fs');
+// const https = require('https');
+// const fs = require('fs');
 const { host, port } = require("./config")
 const path = require('path')
 
-const cert = fs.readFileSync(__dirname + '/ssl/ssl.crt', 'utf-8');
-const key = fs.readFileSync(__dirname + '/ssl/ssl.key', 'utf-8');
+// const cert = fs.readFileSync(__dirname + '/ssl/ssl.crt', 'utf-8');
+// const key = fs.readFileSync(__dirname + '/ssl/ssl.key', 'utf-8');
 
 const app = express();
 app.use(cors);
@@ -19,8 +19,8 @@ app.use(express.static(path.join(__dirname, './public/uploads')));
 app.use("/gr-admin", router);
 connectDb();
 
-const server = https.createServer({ key, cert }, app);
+// const server = https.createServer({ key, cert }, app);
 
-server.listen(port, function () {
+app.listen(port, function () {
     console.log(`CORS-enabled web server listening on port ${port}`)
 });

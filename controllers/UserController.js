@@ -35,7 +35,7 @@ module.exports = {
   },
 
   login: async (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    // res.header("Access-Control-Allow-Origin", "*");
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {

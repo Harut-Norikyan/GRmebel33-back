@@ -2,8 +2,15 @@ const express = require("express");
 const { host, port } = require("./config")
 const path = require('path')
 const app = express();
-const cors = require('cors');
-app.use(cors());
+// const cors = require('cors');
+// app.use(cors());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", '*');
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,Authorization,Accept,content-type,application/json');
+    next();
+});
 const router = require("./routes/index");
 const connectDb = require('./db');
 var bodyParser = require('body-parser');

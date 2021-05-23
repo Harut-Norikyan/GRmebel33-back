@@ -66,7 +66,6 @@ module.exports = {
   },
 
   getProductById: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       const product = await Product.findById({ '_id': id });
@@ -74,7 +73,8 @@ module.exports = {
         var updatedImages = [];
         JSON.parse(product.images).forEach(img => {
           // updatedImages.push(url + img.slice(7, img.length))
-          updatedImages.push(url + "/" + img)
+          // updatedImages.push(url + "/" + img)
+          updatedImages.push("https://gr-mebel-admin.herokuapp.com/gr-admin/get-image/" + img)
         })
         product.images = JSON.stringify(updatedImages);
       }

@@ -4,7 +4,7 @@ const path = require('path')
 const app = express();
 // const cors = require('cors');
 // app.use(cors());
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
     res.header("Access-Control-Allow-Credentials", true);
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
@@ -19,6 +19,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, './public/uploads')));
 app.use("/gr-admin", router);
 connectDb();
-app.listen(port, host, function () {
+app.listen(port, function () {
     console.log(`CORS-enabled web server listening on port ${port}`)
 });

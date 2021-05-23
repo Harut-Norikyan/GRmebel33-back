@@ -171,16 +171,17 @@ module.exports = {
   },
 
   removeProductById: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       const { images } = req.body;
       if (id, images) {
         JSON.parse(images).forEach(img => {
-          if (path.join(__dirname, `../public/uploads/${img}`)) {
-            const imgDir = path.join(__dirname, `../public/uploads/${img}`);
-            fs.unlinkSync(imgDir);
-          };
+          fs.exists(path.join(__dirname, `../public/uploads/${img}`), (exists) => {
+            if (exists) {
+              const imgDir = path.join(__dirname, `../public/uploads/${img}`);
+              fs.unlinkSync(imgDir);
+            }
+          })
         });
         await Product.findOneAndRemove({ "_id": id }, function (err) {
           if (!err) {
@@ -196,7 +197,6 @@ module.exports = {
   },
 
   removeProductImage: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       const { imgPath, images } = req.body;

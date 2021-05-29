@@ -1,20 +1,15 @@
 const Product = require("../models/Product");
-const { host, port } = require("../config");
-const url = `http://${host}:${port}`;
-const path = require("path");
-const fs = require('fs');
+const { default: axios } = require("axios");
+
+const getImageUrl = process.env.NODE_ENV === 'production'
+  ? 'https://gr-mebel-admin.herokuapp.com/gr-admin/get-image'
+  : 'http://localhost:4000/gr-admin/get-image';
 
 module.exports = {
-  getImage: async (req, res, next) => {
-    try {
-      return res.sendFile(path.resolve("./public/uploads/", req.params.imageName));
-    } catch (error) {
-      next(error)
-    }
-  },
   addProduct: async (req, res, next) => {
     try {
       const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
+
       const imagePaths = [];
       if (req.files) {
         req.files.forEach(img => {
@@ -35,7 +30,6 @@ module.exports = {
   },
 
   getProducts: async (req, res, next) => {
-
     try {
       const { currentPage } = req.params;
       const limit = 10;
@@ -54,7 +48,6 @@ module.exports = {
   },
 
   getAllProducts: async (req, res, next) => {
-
     try {
       const products = await Product.find({});
       return res.status(200).json({
@@ -72,9 +65,7 @@ module.exports = {
       if (product) {
         var updatedImages = [];
         JSON.parse(product.images).forEach(img => {
-          // updatedImages.push(url + img.slice(7, img.length))
-          // updatedImages.push(url + "/" + img)
-          updatedImages.push("https://gr-mebel-admin.herokuapp.com/gr-admin/get-image/" + img)
+          updatedImages.push(img)
         })
         product.images = JSON.stringify(updatedImages);
       }
@@ -87,7 +78,6 @@ module.exports = {
   },
 
   searchProduct: async (req, res, next) => {
-
     try {
       const { data } = req.body;
       const products = await Product.find({});
@@ -131,7 +121,6 @@ module.exports = {
   },
 
   updateProductById: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
@@ -175,14 +164,12 @@ module.exports = {
       const { id } = req.params;
       const { images } = req.body;
       if (id, images) {
-        JSON.parse(images).forEach(img => {
-          fs.exists(path.join(__dirname, `../public/uploads/${img}`), (exists) => {
-            if (exists) {
-              const imgDir = path.join(__dirname, `../public/uploads/${img}`);
-              fs.unlinkSync(imgDir);
-            }
-          })
-        });
+        const imgs = JSON.parse(images);
+        for (img of imgs) {
+          const imgPathArr = img.split("/");
+          const imageName = imgPathArr[imgPathArr.length - 1];
+          await axios.delete(`${getImageUrl}/${imageName}`);
+        };
         await Product.findOneAndRemove({ "_id": id }, function (err) {
           if (!err) {
             return res.status(200).json({
@@ -204,8 +191,7 @@ module.exports = {
         try {
           const imgPathArr = imgPath.split("/");
           const imageName = imgPathArr[imgPathArr.length - 1];
-          const imgDir = path.join(__dirname, `../public/uploads/${imageName}`);
-          fs.unlinkSync(imgDir);
+          await axios.delete(`${getImageUrl}/${imageName}`);
           await Product.findByIdAndUpdate({ '_id': id }, { images });
           return res.status(200).json({
             message: "Фотография успешно удалена из сервера !!!"
@@ -220,7 +206,6 @@ module.exports = {
   },
 
   makeTheMain: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       const { images } = req.body;
@@ -236,7 +221,6 @@ module.exports = {
   },
 
   getProductByCategoryId: async (req, res, next) => {
-
     try {
       const { id } = req.params;
       var productsBycategoryId = [];
@@ -255,5 +239,4 @@ module.exports = {
       next(error)
     }
   }
-
 }

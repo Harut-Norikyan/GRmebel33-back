@@ -1,21 +1,16 @@
 const Category = require("../models/Category");
-const { host, port } = require("../config");
-const url = `http://${host}:${port}`;
-const path = require("path");
-const fs = require('fs');
+const { default: axios } = require("axios");
+
+const getImageUrl = process.env.NODE_ENV === 'production'
+  ? 'https://gr-mebel-admin.herokuapp.com/gr-admin/get-image'
+  : 'http://localhost:4000/gr-admin/get-image';
 
 module.exports = {
   addCategory: async (req, res, next) => {
-    
     try {
       const { categoryName } = req.body;
-      if (categoryName && req.files) {
-        const imagePaths = [];
-        if (req.files) {
-          req.files.forEach(img => {
-            imagePaths.push(img.filename);
-          })
-        }
+      if (categoryName && req.file) {
+        const imagePaths = [req.file.filename];
         const images = JSON.stringify(imagePaths) || [];
         await Category.create({ categoryName, images })
         return res.status(200).json({
@@ -28,7 +23,6 @@ module.exports = {
   },
 
   getCategories: async (req, res, next) => {
-    
     try {
       const { currentPage } = req.params;
       const limit = 10;
@@ -42,21 +36,18 @@ module.exports = {
         totalPages: Math.ceil(count / limit),
       })
     } catch (error) {
-
+      next()
     }
   },
 
   getCategoryById: async (req, res, next) => {
-    
     try {
       const { id } = req.params;
       const category = await Category.findById({ '_id': id });
       if (category) {
         var images = [];
         JSON.parse(category.images).forEach(img => {
-          // updatedImages.push(url + img.slice(7, img.length))
-          // images.push(url + "/" + img)
-          images.push("https://gr-mebel-admin.herokuapp.com/gr-admin/get-image/" + img)
+          images.push(img)
         })
         category.images = JSON.stringify(images);
       }
@@ -69,20 +60,15 @@ module.exports = {
   },
 
   updateCategoryById: async (req, res, next) => {
-    
     try {
       const { categoryName, categoryId, imgPath } = req.body;
-      const imagesArr = [];
-      if (req.files) {
-        req.files.forEach(img => {
-          imagesArr.push(img.filename);
-        })
-      }
+      const imagesArr = [req.file.filename];
       if (imagesArr.length) {
         const imgPathArr = imgPath.split("/");
         const oldImageName = imgPathArr[imgPathArr.length - 1];
-        const imgDir = path.join(__dirname, `../public/uploads/${oldImageName}`);
-        fs.unlinkSync(imgDir);
+        if (req.file.filename !== oldImageName) {
+          await axios.delete(`${getImageUrl}/${oldImageName}`);
+        }
         await Category.findOneAndUpdate({ "_id": categoryId }, {
           $set: {
             categoryName,
@@ -101,9 +87,11 @@ module.exports = {
   },
 
   removeCategoryById: async (req, res, next) => {
-    
     try {
       const { id } = req.params;
+      const cat = await Category.findOne({ "_id": id });
+      const img = JSON.parse(cat.images)[0];
+      await axios.delete(`${getImageUrl}/${img}`);
       await Category.findOneAndRemove({ "_id": id })
       return res.status(200).json({
         message: "Категория успешно удалена !!!"
@@ -112,5 +100,4 @@ module.exports = {
       next(error)
     }
   },
-
 }

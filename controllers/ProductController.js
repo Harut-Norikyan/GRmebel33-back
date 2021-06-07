@@ -85,20 +85,9 @@ module.exports = {
       if (products) {
         products.forEach(product => {
           data.forEach(text => {
-            JSON.parse(product.keyWords).forEach(keyWord => {
-              if (text === keyWord) {
-                result.push(product);
-              }
-            })
-          })
-        })
-        products.forEach(product => {
-          data.forEach(text => {
-            if (product.name === text) {
-              const isExist = result?.find(productById => productById._id === product._id);
-              if (!isExist) {
-                result.unshift(product);
-              }
+            const findedText = JSON.parse(product.keyWords).includes(text);
+            if (findedText) {
+              result.push(product)
             }
           })
         })

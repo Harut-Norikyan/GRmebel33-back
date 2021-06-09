@@ -10,6 +10,7 @@ router.post("/add-product", auth, upload.array('images[]'), ProductController.ad
 router.get("/get-products/:currentPage", ProductController.getProducts);
 router.get("/get-all-products", ProductController.getAllProducts);
 router.get("/get-product-by-id/:id", ProductController.getProductById);
+router.post("/get-products-by-id", ProductController.getProductsByIds);
 router.put("/update-product/:id", auth, upload.array('images[]'), ProductController.updateProductById);
 router.post("/remove-product/:id", auth, ProductController.removeProductById);
 router.post("/remove-product-image/:id", auth, ProductController.removeProductImage);

@@ -77,6 +77,26 @@ module.exports = {
     }
   },
 
+  getProductsByIds: async (req, res, next) => {
+    try {
+      const { productIds } = req.body;
+      if (productIds) {
+        const products = await Product.find({});
+        const filteredProducts = [];
+        productIds.forEach(productId => {
+          products.find(product => {
+            if (product._id == productId) filteredProducts.push(product)
+          });
+        })
+        return res.status(200).json({
+          products: filteredProducts
+        })
+      }
+    } catch (error) {
+      next(error)
+    }
+  },
+
   searchProduct: async (req, res, next) => {
     try {
       const { data } = req.body;

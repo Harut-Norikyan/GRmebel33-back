@@ -15,6 +15,7 @@ router.post("/login", [
   check("password", "Пароль не может быть пустым !!!").notEmpty(),
 ], UserController.login);
 router.get("/get-users", auth, UserController.getUsers);
+router.post("/submit-your-application", UserController.submitYourApplication);
 router.put("/update-user-by-id", auth, UserController.updateUserById);
 router.delete("/remove-user", auth, UserController.removeUserById);
 

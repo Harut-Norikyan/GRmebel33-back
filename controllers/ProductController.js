@@ -41,6 +41,7 @@ module.exports = {
       return res.status(200).json({
         products,
         totalPages: Math.ceil(count / limit),
+        allProductsCount: count
       })
     } catch (error) {
       next(error)

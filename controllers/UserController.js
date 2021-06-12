@@ -98,10 +98,10 @@ module.exports = {
 
   submitYourApplication: async (req, res, next) => {
     try {
-      var { phoneNumber } = req.body;
+      var { phoneNumber, name } = req.body;
       const email = "grmebel33@gmail.com";
       if (phoneNumber) {
-        var text = `Пожалуйста свяжитесь со мной по этому номеру +7${phoneNumber}`;
+        var text = `Здравствуйте меня зовут ${name},пожалуйста свяжитесь со мной по этому номеру +7${phoneNumber}`;
         await sendMessage(email, text);
         return res.status(200).json({
           receivedAnApplication: 'Спасибо за вашу заявку,наши специалисты свяжутся с вами в ближайшее время.'

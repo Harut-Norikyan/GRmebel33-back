@@ -106,7 +106,7 @@ module.exports = {
       if (products) {
         products.forEach(product => {
           data.forEach(text => {
-            const findedText = JSON.parse(product.keyWords).includes(text);
+            const findedText = JSON.parse(product.keyWords).includes(text.toLowerCase());
             if (findedText) {
               result.push(product)
             }

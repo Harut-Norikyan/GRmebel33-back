@@ -8,7 +8,7 @@ const getImageUrl = process.env.NODE_ENV === 'production'
 module.exports = {
   addProduct: async (req, res, next) => {
     try {
-      const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
+      const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId, colorsId } = req.body;
 
       const imagePaths = [];
       if (req.files) {
@@ -18,7 +18,7 @@ module.exports = {
       }
       const images = JSON.stringify(imagePaths) || [];
       await Product.create({
-        name, description, price, newPrice, discount, minPrice, images, keyWords, categoriesId
+        name, description, price, newPrice, discount, minPrice, images, keyWords, categoriesId, colorsId
       })
       return res.status(200).json({
         message: "Продукт успешно добавлен !!!"
@@ -133,7 +133,7 @@ module.exports = {
   updateProductById: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId } = req.body;
+      const { name, description, price, newPrice, discount, minPrice, keyWords, categoriesId, colorsId } = req.body;
       var product = await Product.findById({ "_id": id });
       if (product) {
         var productImages = [...JSON.parse(product.images)];
@@ -153,6 +153,7 @@ module.exports = {
             "images": JSON.stringify(productImages),
             keyWords,
             categoriesId,
+            colorsId
           }
         }).exec(function (error) {
           if (error) {

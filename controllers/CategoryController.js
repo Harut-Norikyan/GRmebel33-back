@@ -6,6 +6,7 @@ const getImageUrl = process.env.NODE_ENV === 'production'
   : 'http://localhost:4000/gr-admin/get-image';
 
 module.exports = {
+  
   addCategory: async (req, res, next) => {
     try {
       const { categoryName } = req.body;

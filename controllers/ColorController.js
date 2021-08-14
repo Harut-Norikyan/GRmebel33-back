@@ -3,11 +3,11 @@ const Color = require("../models/Color");
 module.exports = {
   addColor: async (req, res, next) => {
     try {
-      const { color } = req.body;
-      if (!color) {
+      const { color, colorCode } = req.body;
+      if (!color || !colorCode) {
         return;
       } else {
-        await Color.create({ color });
+        await Color.create({ color, colorCode });
         return res.status(200).json({
           message: "Цвет успешно добавлен !!!"
         })
@@ -20,13 +20,14 @@ module.exports = {
   updateColorById: async (req, res, next) => {
     try {
       const { id } = req.params;
-      const { color } = req.body;
-      if (!color || !id) {
+      const { color, colorCode } = req.body;
+      if (!color || !id || !colorCode) {
         return;
       } else {
         await Color.findOneAndUpdate({ "_id": id }, {
           $set: {
             color,
+            colorCode
           }
         })
         return res.status(200).json({
